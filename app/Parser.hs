@@ -56,7 +56,7 @@ codeParse = parens stmtParse
 
 seqParse = do 
             seq <- (sepBy1 stmtParse semi)
-            return $ if length seq == 1 then head seq else Seq seq 
+            return $ if length seq == 1 then head seq else Seq seq  
 
 stmtParse :: Parser Stmt 
 stmtParse = ifParse <|> whileParse <|> assignParse
