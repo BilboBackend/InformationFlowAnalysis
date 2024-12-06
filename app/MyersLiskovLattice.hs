@@ -1,8 +1,8 @@
 
-module Flow where 
+module MyersLiskovLattice where 
 
 import Data.HashMap.Strict as HM
-
+import Algebra.Lattice as LAT
 import Data.Set (Set)
 import qualified Data.Set as Set
 
@@ -13,13 +13,15 @@ type Readers = Set Reader
 
 type Label = HashMap Owner Readers 
 
-
-readers_test1 = Set.fromList ["Niels","Bjarke","Kim","Xuan"]
-readers_test2 = Set.fromList ["Niels","Lars","Kim","Lise"]
+-- instance BoundedLattice Label where 
+--   (\/) 
+--
+readers_test1 = Set.fromList ["Niels","Bjarke","Kim","Lars","Xuan"]
+readers_test2 = Set.fromList ["Niels","Lars","Kim"]
 readers_test3 = Set.fromList ["Niels","Lars","Kim","Johnny","Renee"]
 
-label_test1 = HM.fromList [("Kurt" ,readers_test1)]
-label_test2 = HM.fromList [("Kurt",readers_test3), ("Jannie",readers_test2)]
+label_test1 = HM.fromList [("Kurt" ,readers_test2)]
+label_test2 = HM.fromList [("Kurt",readers_test3), ("Jannie",readers_test1)]
 
 readers :: Label -> Owner -> Readers 
 readers l o = case HM.lookup o l of 
@@ -43,7 +45,6 @@ readersSupset l1 l2 = all (\owner -> Set.isSubsetOf (readers l2 owner) (readers 
 
 l1_lt_l2 :: Label -> Label -> Bool
 l1_lt_l2 l1 l2 = (ownerSubset l1 l2) && (readersSupset l1 l2) 
-
 
 join :: Label -> Label -> Label 
 join l1 l2 = HM.unionWith Set.intersection l1 l2 

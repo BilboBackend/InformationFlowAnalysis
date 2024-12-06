@@ -41,13 +41,14 @@ identifier = Token.identifier lexer -- parses an identifier
 reserved   = Token.reserved   lexer -- parses a reserved name
 reservedOp = Token.reservedOp lexer -- parses an operator
 parens     = Token.parens     lexer -- parses surrounding parenthesis:
+braces     = Token.braces     lexer -- parses surrounding braces
+
 --   parens p
 -- takes care of the parenthesis and
 -- uses p to parse what's inside them
 integer    = Token.integer    lexer -- parses an integer
 semi       = Token.semi       lexer -- parses a semicolon
 whiteSpace = Token.whiteSpace lexer -- parses whitespace
-
 
 codeParse :: Parser Stmt 
 codeParse = parens stmtParse 
@@ -67,7 +68,7 @@ whileParse = do
               reserved "while"
               cond <- bexprParse 
               reserved "do"
-              code <- seqParse 
+              code <- braces seqParse 
               return $ While cond code 
 
 ifParse :: Parser Stmt 

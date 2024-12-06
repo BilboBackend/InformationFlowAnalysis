@@ -27,7 +27,7 @@ semABinop :: ABinop -> AExpr -> AExpr -> Memory -> Integer
 semABinop op expr1 expr2 mem = case op of
   Add -> (semAExpr expr1 mem) + (semAExpr expr2 mem)
   Sub -> (semAExpr expr1 mem) - (semAExpr expr2 mem)
-  Mul -> (semAExpr expr1 mem) * (semAExpr expr1 mem)
+  Mul -> (semAExpr expr1 mem) * (semAExpr expr2 mem)
 
 
 semBExpr :: BExpr -> Memory -> Bool 
@@ -66,28 +66,14 @@ semST statement mem =  case statement of
       (semBExpr bexpr mem) == True then 
         semST s1 mem 
       else semST s2 mem
-    Assign v aexpr -> HM.insert v (semAExpr aexpr mem) mem 
+    Assign v aexpr -> let newval = semAExpr aexpr mem in HM.insert v newval mem 
     While bexpr s -> if 
       (semBExpr bexpr mem == True) then 
         let mem2 = semST s mem in semST (While bexpr s) mem2 
         else mem 
     Seq stmtls -> sem stmtls mem
 
--- check addition and assign
--- check1 = Assign ("a" :: Var) (Plus (N 2) (N 3))
--- memory1 = HM.fromList [("a",2)] 
 
--- check simple counting while
---emptymem = HM.empty 
--- check2 = Seq (Assign ("a" :: Var) (N 0)) (While (Lt (X "a") (N 3)) (Assign ("a" :: Var) (Plus (X "a") (N 1))))
+printMemory :: Memory -> String 
+printMemory mem = Prelude.foldl (++) "" (Prelude.map (\(k,v) -> k ++ " := " ++ (show v) ++ "; ") (HM.toList mem))
 
---
--- eitherAExpr :: Either ParseError AExpr -> String
--- eitherAExpr ae = case ae of 
---   Right a -> show $ executeAE a
---   Left e -> show e
--- --
--- eitherStmt :: Either ParseError Stmt -> String 
--- eitherStmt se = case se of 
---   Right s -> show $ executeCode 
---   Left e -> show e

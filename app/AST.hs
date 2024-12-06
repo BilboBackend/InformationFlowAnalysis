@@ -38,6 +38,9 @@ type Code = [Stmt]
 
 type Memory = HashMap String Integer
 
+--instance Show (HashMap k v) where  
+showMem mem = Prelude.foldl (++) "" (Prelude.map (\(k,v) -> k ++ " := " ++ (show v) ++ "; ") (HM.toList mem))
+
 --instance Show Memory where show (Memory mem) = Prelude.foldl (\(k,v) -> show k ++ " : " ++ show v) "" (HM.toList mem)
 
 
